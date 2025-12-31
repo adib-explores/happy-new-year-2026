@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600;800&display=swap');
+
+        :root {
+            --bg-color: #000000;
+            --accent-color: #ffd700;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        body.theme-red {
+            --bg-color: #8b0000;
+            --accent-color: #ffffff;
+            --text-color: #ffffff;
+            --card-bg: rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .glass {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .hero-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(3rem, 10vw, 6rem);
+            background: linear-gradient(45deg, #fff, var(--accent-color), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s infinite linear;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes shine {
+            0% { background-position: -200%; }
+            100% { background-position: 200%; }
+        }
+
+        .countdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px;
+        }
+
+        .countdown-value {
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-weight: 800;
+            color: var(--accent-color);
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        .sound-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .wish-btn {
+            margin-top: 2rem;
+            padding: 12px 30px;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+
+        .wish-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px var(--accent-color);
+        }
+
+        /* Floating elements */
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="theme-black">
+
+    <canvas id="fireworksCanvas"></canvas>
+
+    <div class="theme-toggle" id="themeToggle" title="Change Theme">
+        <i class="fas fa-palette"></i>
+    </div>
+
+    <div class="sound-toggle" id="soundToggle">
+        <i class="fas fa-volume-mute" id="soundIcon"></i>
+        <span class="ml-2 text-xs">Sound Off</span>
+    </div>
+
+    <div class="content-layer">
+        <div class="glass max-w-2xl w-full floating">
+            <h2 class="text-xl mb-4 tracking-widest opacity-80">WELCOMING</h2>
+            <h1 class="hero-text">2026</h1>
+            <p class="mb-8 text-lg italic">"A new chapter, a new beginning, and a thousand new opportunities."</p>
+
+            <div class="flex justify-center mb-8" id="countdown">
+                <div class="countdown-item">
+                    <span class="countdown-value" id="days">00</span>
+                    <span class="countdown-label">Days</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-value" id="hours">00</span>
+                    <span class="countdown-label">Hrs</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-value" id="minutes">00</span>
+                    <span class="countdown-label">Min</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-value" id="seconds">00</span>
+                    <span class="countdown-label">Sec</span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <p class="text-sm opacity-70">May your year be as bright as the fireworks in the sky!</p>
+                <button class="wish-btn" onclick="triggerBurst()">Celebrate Now!</button>
+            </div>
+        </div>
+
+        <div class="mt-10 text-xs opacity-50">
+            &copy; 2026 New Year Celebrations | Tap anywhere for fireworks
+        </div>
+    </div>
+
+    <script>
+        // --- Firework Audio Setup ---
+        // Using Web Audio API for better performance and multiple concurrent sounds
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+        let soundEnabled = false;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+        }
+
+        function playPopSound() {
+            if (!soundEnabled) return;
+            initAudio();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(150 + Math.random() * 200, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        }
+
+        // --- Theme Toggle ---
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('theme-red');
+            const icon = themeToggle.querySelector('i');
+            icon.classList.add('fa-spin');
+            setTimeout(() => icon.classList.remove('fa-spin'), 500);
+        });
+
+        // --- Sound Toggle ---
+        const soundToggle = document.getElementById('soundToggle');
+        const soundIcon = document.getElementById('soundIcon');
+        soundToggle.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                initAudio();
+                soundIcon.className = 'fas fa-volume-up';
+                soundToggle.querySelector('span').innerText = 'Sound On';
+            } else {
+                soundIcon.className = 'fas fa-volume-mute';
+                soundToggle.querySelector('span').innerText = 'Sound Off';
+            }
+        });
+
+        // --- Fireworks Engine ---
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * (Math.random() * 8),
+                    y: (Math.random() - 0.5) * (Math.random() * 8)
+                };
+                this.alpha = 1;
+                this.friction = 0.95;
+                this.gravity = 0.2;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.velocity.x *= this.friction;
+                this.velocity.y *= this.friction;
+                this.velocity.y += this.gravity;
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.01;
+            }
+        }
+
+        let particles = [];
+
+        function createFirework(x, y) {
+            playPopSound();
+            const colors = ['#ff0040', '#00ffcc', '#00ff44', '#ffff00', '#ffffff', '#ff00ff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        function triggerBurst() {
+            const bursts = 5;
+            for(let i=0; i<bursts; i++){
+                setTimeout(() => {
+                    createFirework(
+                        Math.random() * canvas.width,
+                        Math.random() * canvas.height * 0.7
+                    );
+                }, i * 200);
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            // In red theme, use dark red trail
+            if (document.body.classList.contains('theme-red')) {
+                ctx.fillStyle = 'rgba(139, 0, 0, 0.1)';
+            }
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((particle, index) => {
+                if (particle.alpha > 0) {
+                    particle.update();
+                    particle.draw();
+                } else {
+                    particles.splice(index, 1);
+                }
+            });
+            
+            // Random ambient fireworks
+            if (Math.random() < 0.03) {
+                createFirework(Math.random() * canvas.width, Math.random() * canvas.height * 0.5);
+            }
+        }
+
+        window.addEventListener('mousedown', (e) => {
+            createFirework(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('touchstart', (e) => {
+            createFirework(e.touches[0].clientX, e.touches[0].clientY);
+        });
+
+        // --- Countdown Timer ---
+        function updateCountdown() {
+            const nextYear = new Date('January 1, 2026 00:00:00').getTime();
+            const now = new Date().getTime();
+            const diff = nextYear - now;
+
+            // If the date has passed, show zeros
+            if (diff < 0) {
+                document.getElementById('days').innerText = '00';
+                document.getElementById('hours').innerText = '00';
+                document.getElementById('minutes').innerText = '00';
+                document.getElementById('seconds').innerText = '00';
+                return;
+            }
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        window.onload = () => {
+            animate();
+            // Initial welcome burst
+            setTimeout(triggerBurst, 1000);
+        };
+    </script>
+</body>
+</html>
